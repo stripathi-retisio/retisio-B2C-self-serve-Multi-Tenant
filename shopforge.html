@@ -1,0 +1,2054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ShopForge — Multi-Tenant Commerce Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --brand: #FF5C28;
+    --brand-dim: #c94318;
+    --bg: #0B0B0F;
+    --surface: #141418;
+    --surface2: #1C1C23;
+    --surface3: #25252F;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #F0EFE9;
+    --text2: #9997A0;
+    --text3: #5C5A66;
+    --success: #22C55E;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --info: #38BDF8;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-lg: 18px;
+    --shadow: 0 8px 40px rgba(0,0,0,0.5);
+    --font-head: 'Bricolage Grotesque', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+
+  /* ── UTILITIES ── */
+  .hidden { display: none !important; }
+  .flex { display: flex; }
+  .flex-col { flex-direction: column; }
+  .items-center { align-items: center; }
+  .justify-between { justify-content: space-between; }
+  .justify-center { justify-content: center; }
+  .gap-1 { gap: 4px; } .gap-2 { gap: 8px; } .gap-3 { gap: 12px; }
+  .gap-4 { gap: 16px; } .gap-6 { gap: 24px; } .gap-8 { gap: 32px; }
+  .w-full { width: 100%; }
+  .text-center { text-align: center; }
+  .font-mono { font-family: var(--font-mono); }
+  .text-brand { color: var(--brand); }
+  .text-muted { color: var(--text2); }
+  .text-sm { font-size: 13px; }
+  .text-xs { font-size: 11px; }
+  .text-lg { font-size: 18px; }
+  .text-xl { font-size: 22px; }
+  .text-2xl { font-size: 28px; }
+  .text-3xl { font-size: 36px; }
+  .fw-600 { font-weight: 600; }
+  .fw-700 { font-weight: 700; }
+  .mt-1 { margin-top: 4px; } .mt-2 { margin-top: 8px; }
+  .mt-3 { margin-top: 12px; } .mt-4 { margin-top: 16px; }
+  .mb-2 { margin-bottom: 8px; } .mb-4 { margin-bottom: 16px; }
+  .p-4 { padding: 16px; } .p-6 { padding: 24px; }
+  .relative { position: relative; }
+  .pointer { cursor: pointer; }
+  .truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* ── BADGE ── */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.03em;
+  }
+  .badge-green { background: rgba(34,197,94,0.15); color: var(--success); }
+  .badge-orange { background: rgba(245,158,11,0.15); color: var(--warning); }
+  .badge-red { background: rgba(239,68,68,0.15); color: var(--danger); }
+  .badge-blue { background: rgba(56,189,248,0.15); color: var(--info); }
+  .badge-brand { background: rgba(255,92,40,0.15); color: var(--brand); }
+  .badge-gray { background: rgba(255,255,255,0.07); color: var(--text2); }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 20px; border-radius: var(--radius-sm);
+    font-family: var(--font-body); font-size: 14px; font-weight: 600;
+    cursor: pointer; border: none; transition: all .18s ease;
+    text-decoration: none; white-space: nowrap;
+  }
+  .btn-primary {
+    background: var(--brand); color: #fff;
+    box-shadow: 0 0 0 0 rgba(255,92,40,0.4);
+  }
+  .btn-primary:hover { background: var(--brand-dim); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(255,92,40,0.35); }
+  .btn-secondary { background: var(--surface3); color: var(--text); }
+  .btn-secondary:hover { background: var(--surface3); border: 1px solid var(--border2); }
+  .btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--border2); color: var(--text); background: var(--surface2); }
+  .btn-danger { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); }
+  .btn-danger:hover { background: rgba(239,68,68,0.25); }
+  .btn-sm { padding: 6px 14px; font-size: 13px; }
+  .btn-lg { padding: 13px 28px; font-size: 15px; }
+  .btn-xl { padding: 16px 36px; font-size: 16px; border-radius: var(--radius); }
+  .btn-icon { padding: 8px; border-radius: var(--radius-sm); min-width: 36px; height: 36px; }
+
+  /* ── INPUTS ── */
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-label { font-size: 13px; font-weight: 600; color: var(--text2); letter-spacing: 0.02em; }
+  .form-input {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); color: var(--text);
+    font-family: var(--font-body); font-size: 14px; padding: 10px 14px;
+    transition: border-color .15s; outline: none; width: 100%;
+  }
+  .form-input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(255,92,40,0.12); }
+  .form-input::placeholder { color: var(--text3); }
+  select.form-input { appearance: none; cursor: pointer; }
+  textarea.form-input { resize: vertical; min-height: 90px; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+  }
+  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .card-title { font-family: var(--font-head); font-size: 16px; font-weight: 700; }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 700; color: var(--text3);
+       letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+  td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center; z-index: 1000;
+    padding: 20px; opacity: 0; animation: fadeIn .2s forwards;
+  }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border2);
+    border-radius: var(--radius-lg); padding: 32px; width: 100%; max-width: 520px;
+    max-height: 90vh; overflow-y: auto;
+    transform: translateY(20px); animation: slideUp .2s forwards;
+  }
+  .modal-title { font-family: var(--font-head); font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .modal-subtitle { color: var(--text2); font-size: 14px; margin-bottom: 24px; }
+  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+  /* ── SIDEBAR ── */
+  .layout { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 240px; min-width: 240px; background: var(--surface);
+    border-right: 1px solid var(--border); display: flex; flex-direction: column;
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  }
+  .sidebar-logo { padding: 24px 20px 16px; border-bottom: 1px solid var(--border); }
+  .sidebar-logo .logo-text { font-family: var(--font-head); font-size: 20px; font-weight: 800; }
+  .sidebar-logo .logo-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .sidebar-nav { padding: 12px 10px; flex: 1; }
+  .nav-section-label { font-size: 10px; font-weight: 700; color: var(--text3); letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 12px 10px 6px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+    border-radius: var(--radius-sm); color: var(--text2); font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all .15s; text-decoration: none; margin-bottom: 2px;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: rgba(255,92,40,0.12); color: var(--brand); font-weight: 600; }
+  .nav-item svg { flex-shrink: 0; opacity: 0.8; }
+  .sidebar-footer { padding: 16px; border-top: 1px solid var(--border); }
+  .main-content { flex: 1; padding: 32px; overflow-x: hidden; max-width: calc(100vw - 240px); }
+  .page-header { margin-bottom: 28px; }
+  .page-title { font-family: var(--font-head); font-size: 26px; font-weight: 800; }
+  .page-subtitle { color: var(--text2); font-size: 14px; margin-top: 4px; }
+
+  /* ── STAT CARDS ── */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .stat-label { font-size: 12px; font-weight: 600; color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase; }
+  .stat-value { font-family: var(--font-head); font-size: 28px; font-weight: 800; margin-top: 4px; line-height: 1.1; }
+  .stat-change { font-size: 12px; margin-top: 6px; color: var(--text2); }
+  .stat-change.up { color: var(--success); }
+  .stat-change.down { color: var(--danger); }
+
+  /* ── TOAST ── */
+  .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+  .toast {
+    background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius-sm);
+    padding: 12px 18px; font-size: 14px; font-weight: 500; min-width: 260px;
+    box-shadow: var(--shadow); animation: slideUp .2s ease; display: flex; align-items: center; gap: 10px;
+  }
+  .toast.success { border-left: 3px solid var(--success); }
+  .toast.error { border-left: 3px solid var(--danger); }
+  .toast.info { border-left: 3px solid var(--info); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeIn { to { opacity: 1; } }
+  @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+  /* ── TOPBAR (for auth pages) ── */
+  .topbar {
+    height: 60px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; border-bottom: 1px solid var(--border); background: var(--surface);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo { font-family: var(--font-head); font-size: 22px; font-weight: 800; cursor: pointer; }
+  .logo span { color: var(--brand); }
+
+  /* ── LANDING ── */
+  .hero {
+    min-height: calc(100vh - 60px); display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    padding: 80px 20px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 800px; border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(255,92,40,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,92,40,0.1);
+    border: 1px solid rgba(255,92,40,0.25); color: var(--brand); border-radius: 100px;
+    padding: 5px 14px; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 28px; }
+  .hero-title { font-family: var(--font-head); font-size: clamp(42px, 7vw, 80px); font-weight: 800;
+    line-height: 1.05; max-width: 860px; letter-spacing: -0.02em; }
+  .hero-title em { color: var(--brand); font-style: normal; }
+  .hero-sub { font-size: 18px; color: var(--text2); max-width: 560px; margin: 20px auto 40px; line-height: 1.7; }
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 80px 40px; max-width: 1200px; margin: 0 auto; }
+  .feature-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; transition: border-color .2s; }
+  .feature-card:hover { border-color: var(--border2); }
+  .feature-icon { width: 44px; height: 44px; border-radius: 10px; background: rgba(255,92,40,0.1);
+    display: flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 20px; }
+  .feature-title { font-family: var(--font-head); font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+  .feature-desc { color: var(--text2); font-size: 14px; line-height: 1.65; }
+
+  .pricing-section { padding: 80px 40px; max-width: 1200px; margin: 0 auto; text-align: center; }
+  .section-title { font-family: var(--font-head); font-size: 36px; font-weight: 800; margin-bottom: 8px; }
+  .section-sub { color: var(--text2); font-size: 16px; margin-bottom: 48px; }
+  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; text-align: left; }
+  .pricing-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; }
+  .pricing-card.featured { border-color: var(--brand); background: rgba(255,92,40,0.04); }
+  .plan-name { font-family: var(--font-head); font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .plan-price { font-family: var(--font-head); font-size: 38px; font-weight: 800; margin: 12px 0; }
+  .plan-price sup { font-size: 18px; font-weight: 600; vertical-align: super; }
+  .plan-price sub { font-size: 14px; font-weight: 400; color: var(--text2); }
+  .plan-features { list-style: none; margin: 20px 0; display: flex; flex-direction: column; gap: 10px; }
+  .plan-features li { font-size: 14px; color: var(--text2); display: flex; align-items: center; gap: 8px; }
+  .plan-features li::before { content: '✓'; color: var(--success); font-weight: 700; }
+
+  /* ── AUTH PAGES ── */
+  .auth-wrap { min-height: calc(100vh - 60px); display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+  .auth-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 40px; width: 100%; max-width: 460px; }
+  .auth-title { font-family: var(--font-head); font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+  .auth-sub { color: var(--text2); font-size: 14px; margin-bottom: 28px; }
+  .auth-form { display: flex; flex-direction: column; gap: 18px; }
+  .auth-divider { display: flex; align-items: center; gap: 12px; margin: 4px 0; color: var(--text3); font-size: 12px; }
+  .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .auth-switch { text-align: center; font-size: 14px; color: var(--text2); margin-top: 20px; }
+  .auth-switch a { color: var(--brand); cursor: pointer; font-weight: 600; }
+
+  /* ── STORE THEMES ── */
+  .theme-preview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+  .theme-option { border: 2px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; cursor: pointer; transition: border-color .15s; }
+  .theme-option.selected { border-color: var(--brand); }
+  .theme-swatch { height: 60px; }
+  .theme-label { padding: 6px 8px; font-size: 12px; font-weight: 600; background: var(--surface2); text-align: center; }
+
+  /* ── STOREFRONT ── */
+  .store-nav { background: var(--store-nav, #1a1a2e); padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; }
+  .store-hero { background: var(--store-hero, #16213e); padding: 100px 40px; text-align: center; }
+  .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; padding: 40px; max-width: 1200px; margin: 0 auto; }
+  .product-card-store { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: transform .2s, box-shadow .2s; }
+  .product-card-store:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+  .product-img { height: 200px; display: flex; align-items: center; justify-content: center; font-size: 60px; background: var(--surface2); }
+  .product-info { padding: 16px; }
+  .product-name { font-family: var(--font-head); font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .product-price { font-size: 18px; font-weight: 700; color: var(--brand); }
+  .product-desc { font-size: 13px; color: var(--text2); margin: 6px 0 12px; }
+
+  /* ── CART ── */
+  .cart-sidebar {
+    position: fixed; right: 0; top: 0; bottom: 0; width: 380px; max-width: 100vw;
+    background: var(--surface); border-left: 1px solid var(--border2);
+    transform: translateX(100%); transition: transform .25s ease; z-index: 500;
+    display: flex; flex-direction: column; padding: 24px;
+  }
+  .cart-sidebar.open { transform: translateX(0); }
+  .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 499; display: none; }
+  .cart-overlay.open { display: block; }
+  .cart-item { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .cart-item-img { width: 60px; height: 60px; background: var(--surface2); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
+  .qty-control { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .qty-btn { width: 28px; height: 28px; background: var(--surface3); border: none; color: var(--text); border-radius: 6px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+
+  /* ── EMPTY STATES ── */
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--text2); }
+  .empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+  .empty-title { font-family: var(--font-head); font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+
+  /* ── PRODUCT GRID (dashboard) ── */
+  .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+  .product-card-dash { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .product-card-dash-img { height: 140px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 50px; }
+  .product-card-dash-body { padding: 14px; }
+
+  /* ── SCHEMA ── */
+  .schema-section { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+  .schema-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 32px; }
+  .schema-table th { background: var(--surface2); padding: 10px 14px; text-align: left; font-weight: 700; color: var(--text2); border: 1px solid var(--border); }
+  .schema-table td { padding: 9px 14px; border: 1px solid var(--border); vertical-align: top; }
+  .col-type { color: var(--info); font-family: var(--font-mono); font-size: 12px; }
+  .col-pk { color: var(--warning); font-family: var(--font-mono); font-size: 11px; }
+  .col-fk { color: var(--success); font-family: var(--font-mono); font-size: 11px; }
+
+  /* ── TABS ── */
+  .tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 24px; overflow-x: auto; }
+  .tab { padding: 10px 18px; font-size: 14px; font-weight: 600; color: var(--text2); cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; white-space: nowrap; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--brand); border-bottom-color: var(--brand); }
+
+  /* ── SETTINGS ── */
+  .settings-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 20px; }
+  .settings-header { padding: 18px 20px; border-bottom: 1px solid var(--border); font-family: var(--font-head); font-size: 15px; font-weight: 700; }
+  .settings-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+  .settings-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+  .toggle { width: 42px; height: 24px; background: var(--surface3); border-radius: 12px; cursor: pointer; position: relative; transition: background .2s; flex-shrink: 0; }
+  .toggle::after { content: ''; position: absolute; left: 3px; top: 3px; width: 18px; height: 18px; background: #fff; border-radius: 50%; transition: left .2s; }
+  .toggle.on { background: var(--brand); }
+  .toggle.on::after { left: 21px; }
+
+  /* ── COLOR PICKER ── */
+  .color-swatches { display: flex; gap: 8px; flex-wrap: wrap; }
+  .color-swatch { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform .15s; }
+  .color-swatch:hover { transform: scale(1.15); }
+  .color-swatch.selected { border-color: var(--text); }
+
+  /* ── ONBOARDING STEPS ── */
+  .steps-indicator { display: flex; gap: 0; margin-bottom: 36px; }
+  .step-item { flex: 1; text-align: center; position: relative; }
+  .step-item::after { content: ''; position: absolute; top: 16px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: 0; }
+  .step-item:last-child::after { display: none; }
+  .step-num { width: 32px; height: 32px; border-radius: 50%; background: var(--surface3); border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;
+    margin: 0 auto 6px; position: relative; z-index: 1; transition: all .2s; }
+  .step-item.active .step-num { background: var(--brand); border-color: var(--brand); color: #fff; }
+  .step-item.done .step-num { background: var(--success); border-color: var(--success); color: #fff; }
+  .step-label { font-size: 11px; color: var(--text3); font-weight: 600; letter-spacing: 0.04em; }
+  .step-item.active .step-label { color: var(--text); }
+
+  /* ── CHART PLACEHOLDER ── */
+  .chart-wrap { background: var(--surface2); border-radius: var(--radius-sm); padding: 20px; position: relative; overflow: hidden; }
+  .chart-bars { display: flex; align-items: flex-end; gap: 8px; height: 120px; }
+  .chart-bar { flex: 1; background: rgba(255,92,40,0.3); border-radius: 4px 4px 0 0; transition: height .4s ease; cursor: pointer; }
+  .chart-bar:hover { background: rgba(255,92,40,0.6); }
+  .chart-bar.active { background: var(--brand); }
+  .chart-labels { display: flex; gap: 8px; margin-top: 8px; }
+  .chart-label { flex: 1; text-align: center; font-size: 10px; color: var(--text3); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .sidebar { width: 200px; min-width: 200px; }
+    .main-content { padding: 20px; max-width: calc(100vw - 200px); }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 580px) {
+    .layout { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; position: relative; }
+    .main-content { max-width: 100vw; }
+  }
+
+  /* ── NOTIFICATION DOT ── */
+  .notif-dot { width: 8px; height: 8px; background: var(--brand); border-radius: 50%; flex-shrink: 0; }
+
+  /* grid helpers */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media(max-width:700px) { .grid-2,.grid-3 { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   SHOPFORGE — Multi-Tenant Ecommerce Platform
+   State + DB Layer (localStorage)
+═══════════════════════════════════════════════════ */
+
+const DB = {
+  get(key) { try { return JSON.parse(localStorage.getItem('sf_' + key)) || null; } catch { return null; } },
+  set(key, val) { localStorage.setItem('sf_' + key, JSON.stringify(val)); },
+  del(key) { localStorage.removeItem('sf_' + key); },
+
+  /* ── Tenants (merchants) ── */
+  getTenants() { return this.get('tenants') || []; },
+  saveTenants(t) { this.set('tenants', t); },
+  getTenant(id) { return this.getTenants().find(t => t.id === id) || null; },
+  getTenantBySlug(slug) { return this.getTenants().find(t => t.slug === slug) || null; },
+  addTenant(tenant) {
+    const list = this.getTenants();
+    tenant.id = 'tenant_' + Date.now();
+    tenant.createdAt = new Date().toISOString();
+    tenant.status = 'active';
+    tenant.plan = tenant.plan || 'starter';
+    tenant.revenue = 0;
+    tenant.theme = { primaryColor: '#FF5C28', bgColor: '#0B0B0F', accentColor: '#fff' };
+    tenant.settings = { maintenanceMode: false, allowReviews: true, freeShipping: false, currency: 'USD' };
+    list.push(tenant);
+    this.saveTenants(list);
+    return tenant;
+  },
+  updateTenant(id, updates) {
+    const list = this.getTenants();
+    const i = list.findIndex(t => t.id === id);
+    if (i >= 0) { list[i] = { ...list[i], ...updates }; this.saveTenants(list); return list[i]; }
+    return null;
+  },
+  deleteTenant(id) {
+    this.saveTenants(this.getTenants().filter(t => t.id !== id));
+    this.del('products_' + id);
+    this.del('orders_' + id);
+  },
+
+  /* ── Products ── */
+  getProducts(tenantId) { return this.get('products_' + tenantId) || []; },
+  saveProducts(tenantId, p) { this.set('products_' + tenantId, p); },
+  addProduct(tenantId, product) {
+    const list = this.getProducts(tenantId);
+    product.id = 'prod_' + Date.now();
+    product.createdAt = new Date().toISOString();
+    product.tenantId = tenantId;
+    list.push(product);
+    this.saveProducts(tenantId, list);
+    return product;
+  },
+  updateProduct(tenantId, productId, updates) {
+    const list = this.getProducts(tenantId);
+    const i = list.findIndex(p => p.id === productId);
+    if (i >= 0) { list[i] = { ...list[i], ...updates }; this.saveProducts(tenantId, list); return list[i]; }
+    return null;
+  },
+  deleteProduct(tenantId, productId) {
+    this.saveProducts(tenantId, this.getProducts(tenantId).filter(p => p.id !== productId));
+  },
+
+  /* ── Orders ── */
+  getOrders(tenantId) { return this.get('orders_' + tenantId) || []; },
+  saveOrders(tenantId, o) { this.set('orders_' + tenantId, o); },
+  addOrder(tenantId, order) {
+    const list = this.getOrders(tenantId);
+    order.id = 'ORD-' + Math.random().toString(36).substr(2,6).toUpperCase();
+    order.createdAt = new Date().toISOString();
+    order.tenantId = tenantId;
+    order.status = order.status || 'pending';
+    list.unshift(order);
+    this.saveOrders(tenantId, list);
+    // update tenant revenue
+    const t = this.getTenant(tenantId);
+    if (t) this.updateTenant(tenantId, { revenue: (t.revenue || 0) + order.total });
+    return order;
+  },
+  updateOrder(tenantId, orderId, updates) {
+    const list = this.getOrders(tenantId);
+    const i = list.findIndex(o => o.id === orderId);
+    if (i >= 0) { list[i] = { ...list[i], ...updates }; this.saveOrders(tenantId, list); return list[i]; }
+    return null;
+  },
+
+  /* ── Admin ── */
+  getAdmin() { return this.get('admin') || { email: 'admin@shopforge.io', password: 'admin123', name: 'Platform Admin' }; },
+
+  /* ── Session ── */
+  getSession() { return this.get('session') || null; },
+  setSession(s) { this.set('session', s); },
+  clearSession() { this.del('session'); },
+};
+
+/* ═══════════════════════════════════════════════════
+   SEED DATA
+═══════════════════════════════════════════════════ */
+function seedData() {
+  if (DB.getTenants().length > 0) return;
+
+  const t1 = DB.addTenant({ name: 'Pixel & Thread', slug: 'pixel-thread', email: 'hello@pixelthread.com', password: 'demo123', ownerName: 'Arjun Mehta', plan: 'growth' });
+  const t2 = DB.addTenant({ name: 'Green Roots', slug: 'green-roots', email: 'hi@greenroots.co', password: 'demo123', ownerName: 'Priya Sharma', plan: 'starter' });
+  const t3 = DB.addTenant({ name: 'Urban Luxe', slug: 'urban-luxe', email: 'contact@urbanluxe.in', password: 'demo123', ownerName: 'Rahul Iyer', plan: 'enterprise' });
+
+  DB.addProduct(t1.id, { name: 'Minimal Tote Bag', price: 899, comparePrice: 1199, category: 'Bags', stock: 42, emoji: '👜', description: 'Handcrafted minimal canvas tote.', published: true });
+  DB.addProduct(t1.id, { name: 'Graphic Print Tee', price: 549, comparePrice: 799, category: 'Apparel', stock: 108, emoji: '👕', description: 'Premium cotton graphic tee.', published: true });
+  DB.addProduct(t1.id, { name: 'Retro Snapback', price: 649, comparePrice: null, category: 'Accessories', stock: 29, emoji: '🧢', description: 'Vintage-style snapback cap.', published: true });
+  DB.addProduct(t1.id, { name: 'Cream Hoodie', price: 1299, comparePrice: 1699, category: 'Apparel', stock: 63, emoji: '🧥', description: 'Oversized cream-tone hoodie.', published: false });
+
+  DB.addProduct(t2.id, { name: 'Bamboo Water Bottle', price: 499, category: 'Lifestyle', stock: 78, emoji: '🍃', description: 'Eco-friendly bamboo bottle.', published: true });
+  DB.addProduct(t2.id, { name: 'Organic Tote', price: 349, category: 'Bags', stock: 54, emoji: '🌿', description: 'Reusable organic cotton tote.', published: true });
+  DB.addProduct(t2.id, { name: 'Seed Paper Kit', price: 299, category: 'Gifting', stock: 90, emoji: '🌱', description: 'Grow wildflowers from this card.', published: true });
+
+  DB.addProduct(t3.id, { name: 'Leather Wallet', price: 2499, category: 'Accessories', stock: 30, emoji: '👛', description: 'Full-grain leather bifold.', published: true });
+  DB.addProduct(t3.id, { name: 'Silk Scarf', price: 3299, category: 'Apparel', stock: 15, emoji: '🧣', description: '100% silk artisan scarf.', published: true });
+
+  const statuses = ['pending','processing','shipped','delivered','cancelled'];
+  const customers = ['Riya Nair','Amit Joshi','Sneha Kaur','Dev Patel','Aisha Khan','Rohan Das'];
+  [t1, t2, t3].forEach(t => {
+    const prods = DB.getProducts(t.id);
+    for (let i = 0; i < 8; i++) {
+      const p = prods[Math.floor(Math.random() * prods.length)];
+      if (!p) continue;
+      const qty = Math.ceil(Math.random() * 3);
+      DB.addOrder(t.id, {
+        customerName: customers[Math.floor(Math.random() * customers.length)],
+        customerEmail: 'customer@example.com',
+        items: [{ productId: p.id, name: p.name, price: p.price, qty, emoji: p.emoji }],
+        total: p.price * qty,
+        status: statuses[Math.floor(Math.random() * statuses.length)],
+        address: '123 Main St, Bengaluru 560001',
+        paymentMethod: Math.random() > 0.5 ? 'UPI' : 'Card',
+      });
+    }
+  });
+}
+seedData();
+
+/* ═══════════════════════════════════════════════════
+   ROUTER
+═══════════════════════════════════════════════════ */
+const Router = {
+  current: '',
+  params: {},
+  go(path, params = {}) {
+    this.current = path;
+    this.params = params;
+    this.render();
+  },
+  render() {
+    const session = DB.getSession();
+    const app = document.getElementById('app');
+    const route = this.current;
+
+    // clear any modals
+    document.querySelectorAll('.modal-overlay').forEach(m => m.remove());
+
+    if (route === '' || route === 'landing') { app.innerHTML = renderLanding(); attachLanding(); return; }
+    if (route === 'signup') { app.innerHTML = renderSignup(); attachSignup(); return; }
+    if (route === 'login') { app.innerHTML = renderLogin(); attachLogin(); return; }
+    if (route === 'schema') { app.innerHTML = renderSchema(); return; }
+
+    if (route === 'store') {
+      const slug = this.params.slug;
+      const tenant = DB.getTenantBySlug(slug);
+      if (!tenant) { app.innerHTML = '<div style="text-align:center;padding:100px 20px"><h2>Store not found</h2><br><button class="btn btn-primary" onclick="Router.go(\'landing\')">Go Home</button></div>'; return; }
+      app.innerHTML = renderStore(tenant);
+      attachStore(tenant);
+      return;
+    }
+
+    if (route === 'dashboard') {
+      if (!session || session.role !== 'merchant') { Router.go('login'); return; }
+      const tenant = DB.getTenant(session.tenantId);
+      if (!tenant) { DB.clearSession(); Router.go('login'); return; }
+      app.innerHTML = renderDashboard(tenant, this.params.tab || 'overview');
+      attachDashboard(tenant, this.params.tab || 'overview');
+      return;
+    }
+
+    if (route === 'admin') { app.innerHTML = renderAdminLogin(); attachAdminLogin(); return; }
+    if (route === 'admin-dashboard') {
+      if (!session || session.role !== 'admin') { Router.go('admin'); return; }
+      app.innerHTML = renderAdminDashboard(this.params.tab || 'overview');
+      attachAdminDashboard(this.params.tab || 'overview');
+      return;
+    }
+
+    Router.go('landing');
+  }
+};
+
+/* ═══════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════ */
+function toast(msg, type = 'success') {
+  const icons = { success: '✓', error: '✕', info: 'ℹ' };
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
+  document.getElementById('toastContainer').appendChild(el);
+  setTimeout(() => el.style.opacity = '0', 2500);
+  setTimeout(() => el.remove(), 2800);
+}
+
+/* ═══════════════════════════════════════════════════
+   SVG ICONS
+═══════════════════════════════════════════════════ */
+const I = {
+  home: `<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>`,
+  box: `<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>`,
+  orders: `<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>`,
+  users: `<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>`,
+  settings: `<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>`,
+  chart: `<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>`,
+  store: `<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+  logout: `<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>`,
+  plus: `<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>`,
+  edit: `<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>`,
+  trash: `<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>`,
+  external: `<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>`,
+  cart: `<svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>`,
+  x: `<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M6 18L18 6M6 6l12 12"/></svg>`,
+  db: `<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>`,
+  shield: `<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+};
+
+/* ═══════════════════════════════════════════════════
+   LANDING PAGE
+═══════════════════════════════════════════════════ */
+function renderLanding() {
+  return `
+    <div class="topbar">
+      <div class="logo">Shop<span>Forge</span></div>
+      <div class="flex gap-3">
+        <button class="btn btn-ghost btn-sm" onclick="Router.go('login')">Merchant Login</button>
+        <button class="btn btn-ghost btn-sm" onclick="Router.go('admin')">Admin</button>
+        <button class="btn btn-primary btn-sm" onclick="Router.go('signup')">Start Free Trial</button>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="hero-badge">✦ Multi-Tenant Commerce Platform</div>
+      <h1 class="hero-title">Launch your store.<br><em>Own your growth.</em></h1>
+      <p class="hero-sub">ShopForge gives every entrepreneur a fully featured, white-label ecommerce store — onboard in minutes, no code needed.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary btn-xl" onclick="Router.go('signup')">Create Your Store →</button>
+        <button class="btn btn-ghost btn-xl" onclick="Router.go('store',{slug:'pixel-thread'})">View Demo Store</button>
+      </div>
+      <div class="flex gap-8 mt-4" style="flex-wrap:wrap;justify-content:center;color:var(--text2);font-size:13px;margin-top:28px;">
+        <span>✓ Free 14-day trial</span>
+        <span>✓ No credit card required</span>
+        <span>✓ Cancel anytime</span>
+      </div>
+    </section>
+
+    <section class="features-grid">
+      ${[
+        ['🏪','Your Own Storefront','Custom domain, themes & branding — fully yours from day one.'],
+        ['📦','Product Management','Add unlimited products with variants, images & inventory tracking.'],
+        ['💳','Payments Built-in','Accept UPI, cards & wallets with zero setup. Instant payouts.'],
+        ['📊','Real-time Analytics','Sales, traffic & conversion data at your fingertips, always.'],
+        ['🚚','Order Fulfillment','Track, update & ship orders directly from your dashboard.'],
+        ['🔌','App Marketplace','Extend your store with 100+ integrations — email, loyalty, and more.'],
+      ].map(([icon,title,desc]) => `
+        <div class="feature-card">
+          <div class="feature-icon">${icon}</div>
+          <div class="feature-title">${title}</div>
+          <p class="feature-desc">${desc}</p>
+        </div>
+      `).join('')}
+    </section>
+
+    <section class="pricing-section">
+      <h2 class="section-title">Simple, transparent pricing</h2>
+      <p class="section-sub">Start free. Scale as you grow.</p>
+      <div class="pricing-grid">
+        ${[
+          { name:'Starter', price:0, sub:'month', features:['1 Store','Up to 50 products','2% transaction fee','Basic analytics','Email support'], cta:'Start Free' },
+          { name:'Growth', price:999, sub:'month', features:['1 Store','Unlimited products','0.8% transaction fee','Advanced analytics','Custom domain','Priority support'], cta:'Start Trial', featured:true },
+          { name:'Enterprise', price:4999, sub:'month', features:['10 Stores','Unlimited products','0% transaction fee','Full analytics suite','Dedicated support','White-label','API access'], cta:'Contact Sales' },
+        ].map(p => `
+          <div class="pricing-card ${p.featured ? 'featured' : ''}">
+            ${p.featured ? '<div class="badge badge-brand" style="margin-bottom:10px">Most Popular</div>' : ''}
+            <div class="plan-name">${p.name}</div>
+            <div class="plan-price"><sup>₹</sup>${p.price.toLocaleString()}<sub>/${p.sub}</sub></div>
+            <ul class="plan-features">${p.features.map(f=>`<li>${f}</li>`).join('')}</ul>
+            <button class="btn ${p.featured ? 'btn-primary' : 'btn-ghost'} w-full" onclick="Router.go('signup')">${p.cta}</button>
+          </div>
+        `).join('')}
+      </div>
+    </section>
+
+    <section style="text-align:center;padding:80px 40px 100px;border-top:1px solid var(--border);max-width:700px;margin:0 auto;">
+      <h2 class="section-title">Ready to build your store?</h2>
+      <p class="section-sub">Join thousands of merchants already selling on ShopForge.</p>
+      <button class="btn btn-primary btn-xl" onclick="Router.go('signup')">Get Started Free →</button>
+      <div style="margin-top:24px;">
+        <button class="btn btn-ghost btn-sm" onclick="Router.go('schema')">📐 View DB Schema</button>
+      </div>
+    </section>
+  `;
+}
+function attachLanding() {}
+
+/* ═══════════════════════════════════════════════════
+   SIGNUP / ONBOARDING
+═══════════════════════════════════════════════════ */
+let signupStep = 1;
+let signupData = {};
+
+function renderSignup() {
+  return `
+    <div class="topbar">
+      <div class="logo" onclick="Router.go('landing')">Shop<span>Forge</span></div>
+      <div class="flex gap-3 text-sm text-muted">Already have a store? <a style="color:var(--brand);cursor:pointer;font-weight:600;" onclick="Router.go('login')">Log in</a></div>
+    </div>
+    <div class="auth-wrap">
+      <div style="width:100%;max-width:520px;">
+        <div class="steps-indicator mb-4" id="stepsIndicator"></div>
+        <div class="auth-card" id="signupCard"></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderSignupStep() {
+  const indicator = document.getElementById('stepsIndicator');
+  const card = document.getElementById('signupCard');
+  if (!indicator || !card) return;
+
+  const steps = ['Account','Store Info','Theme','Done'];
+  indicator.innerHTML = steps.map((s, i) => {
+    const n = i + 1;
+    const cls = n < signupStep ? 'done' : n === signupStep ? 'active' : '';
+    return `<div class="step-item ${cls}"><div class="step-num">${n < signupStep ? '✓' : n}</div><div class="step-label">${s}</div></div>`;
+  }).join('');
+
+  if (signupStep === 1) {
+    card.innerHTML = `
+      <div class="auth-title">Create your account</div>
+      <div class="auth-sub">Start your free 14-day trial. No credit card required.</div>
+      <div class="auth-form">
+        <div class="grid-2">
+          <div class="form-group"><label class="form-label">First Name</label><input class="form-input" id="s_fname" placeholder="Arjun" value="${signupData.firstName||''}"/></div>
+          <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" id="s_lname" placeholder="Mehta" value="${signupData.lastName||''}"/></div>
+        </div>
+        <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" id="s_email" type="email" placeholder="you@example.com" value="${signupData.email||''}"/></div>
+        <div class="form-group"><label class="form-label">Password</label><input class="form-input" id="s_password" type="password" placeholder="Min 8 characters" value="${signupData.password||''}"/></div>
+        <button class="btn btn-primary w-full btn-lg" id="s_next1">Continue →</button>
+      </div>
+      <div class="auth-switch">Already have a store? <a onclick="Router.go('login')">Log in</a></div>
+    `;
+    document.getElementById('s_next1').onclick = () => {
+      const fn = document.getElementById('s_fname').value.trim();
+      const ln = document.getElementById('s_lname').value.trim();
+      const em = document.getElementById('s_email').value.trim();
+      const pw = document.getElementById('s_password').value;
+      if (!fn || !em || !pw) return toast('Please fill all fields', 'error');
+      if (pw.length < 6) return toast('Password must be 6+ characters', 'error');
+      if (DB.getTenants().find(t => t.email === em)) return toast('Email already registered', 'error');
+      signupData = { ...signupData, firstName: fn, lastName: ln, email: em, password: pw };
+      signupStep = 2; renderSignupStep();
+    };
+  } else if (signupStep === 2) {
+    card.innerHTML = `
+      <div class="auth-title">Set up your store</div>
+      <div class="auth-sub">Tell us about your business.</div>
+      <div class="auth-form">
+        <div class="form-group"><label class="form-label">Store Name</label><input class="form-input" id="s_sname" placeholder="My Awesome Store" value="${signupData.storeName||''}"/></div>
+        <div class="form-group"><label class="form-label">Store URL slug</label>
+          <div class="relative"><span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px;">shopforge.io/</span>
+          <input class="form-input" id="s_slug" style="padding-left:110px" placeholder="my-store" value="${signupData.slug||''}"/></div>
+        </div>
+        <div class="form-group"><label class="form-label">Business Category</label>
+          <select class="form-input" id="s_cat">
+            <option value="">Select category...</option>
+            ${['Fashion & Apparel','Electronics','Home & Decor','Food & Beverages','Beauty & Wellness','Sports & Fitness','Books & Media','Handicrafts'].map(c=>`<option ${signupData.category===c?'selected':''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Plan</label>
+          <select class="form-input" id="s_plan">
+            <option value="starter" ${signupData.plan==='starter'?'selected':''}>Starter — Free</option>
+            <option value="growth" ${signupData.plan==='growth'?'selected':''}>Growth — ₹999/mo</option>
+            <option value="enterprise" ${signupData.plan==='enterprise'?'selected':''}>Enterprise — ₹4999/mo</option>
+          </select>
+        </div>
+        <div class="flex gap-3">
+          <button class="btn btn-ghost w-full" onclick="signupStep=1;renderSignupStep()">← Back</button>
+          <button class="btn btn-primary w-full btn-lg" id="s_next2">Continue →</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('s_sname').oninput = (e) => {
+      const slug = e.target.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+      document.getElementById('s_slug').value = slug;
+    };
+    document.getElementById('s_next2').onclick = () => {
+      const sname = document.getElementById('s_sname').value.trim();
+      const slug = document.getElementById('s_slug').value.trim().toLowerCase();
+      const cat = document.getElementById('s_cat').value;
+      const plan = document.getElementById('s_plan').value;
+      if (!sname || !slug) return toast('Store name & slug required', 'error');
+      if (!/^[a-z0-9-]+$/.test(slug)) return toast('Slug can only contain lowercase letters, numbers, hyphens', 'error');
+      if (DB.getTenantBySlug(slug)) return toast('That store URL is already taken', 'error');
+      signupData = { ...signupData, storeName: sname, slug, category: cat, plan };
+      signupStep = 3; renderSignupStep();
+    };
+  } else if (signupStep === 3) {
+    const themes = [
+      { name: 'Dark Ember', bg: 'linear-gradient(135deg,#0b0b0f,#1c0a00)', accent: '#FF5C28' },
+      { name: 'Ocean Deep', bg: 'linear-gradient(135deg,#0d1b2a,#1e3a5f)', accent: '#38BDF8' },
+      { name: 'Forest', bg: 'linear-gradient(135deg,#0a1f0a,#1a3a1a)', accent: '#22C55E' },
+      { name: 'Rose Gold', bg: 'linear-gradient(135deg,#1f0a0a,#3a1a1a)', accent: '#F43F5E' },
+      { name: 'Violet', bg: 'linear-gradient(135deg,#10001f,#1f0a3a)', accent: '#A855F7' },
+      { name: 'Slate', bg: 'linear-gradient(135deg,#0f172a,#1e293b)', accent: '#94A3B8' },
+    ];
+    signupData.themeIndex = signupData.themeIndex ?? 0;
+    card.innerHTML = `
+      <div class="auth-title">Choose your theme</div>
+      <div class="auth-sub">Pick a look for your storefront. You can change this later.</div>
+      <div class="theme-preview" id="themeGrid">
+        ${themes.map((t, i) => `
+          <div class="theme-option ${i === signupData.themeIndex ? 'selected' : ''}" data-theme="${i}" onclick="signupData.themeIndex=${i};document.querySelectorAll('.theme-option').forEach(el=>el.classList.remove('selected'));this.classList.add('selected');">
+            <div class="theme-swatch" style="background:${t.bg};border-bottom:2px solid ${t.accent}"></div>
+            <div class="theme-label">${t.name}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="flex gap-3 mt-4">
+        <button class="btn btn-ghost w-full" onclick="signupStep=2;renderSignupStep()">← Back</button>
+        <button class="btn btn-primary w-full btn-lg" id="s_finish">Launch Store →</button>
+      </div>
+    `;
+    document.getElementById('s_finish').onclick = () => {
+      const theme = themes[signupData.themeIndex];
+      const tenant = DB.addTenant({
+        name: signupData.storeName,
+        slug: signupData.slug,
+        email: signupData.email,
+        password: signupData.password,
+        ownerName: signupData.firstName + ' ' + signupData.lastName,
+        category: signupData.category,
+        plan: signupData.plan || 'starter',
+        theme: { primaryColor: theme.accent, bgGradient: theme.bg },
+      });
+      DB.setSession({ role: 'merchant', tenantId: tenant.id, email: tenant.email, name: tenant.ownerName });
+      signupStep = 4; renderSignupStep();
+    };
+  } else if (signupStep === 4) {
+    card.innerHTML = `
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-size:64px;margin-bottom:16px">🎉</div>
+        <div class="auth-title">You're all set!</div>
+        <p style="color:var(--text2);font-size:15px;margin:12px 0 28px">Your store <strong style="color:var(--brand)">${signupData.storeName}</strong> is live and ready.</p>
+        <div class="flex flex-col gap-3">
+          <button class="btn btn-primary w-full btn-lg" onclick="Router.go('dashboard',{tab:'overview'})">Go to Dashboard →</button>
+          <button class="btn btn-ghost w-full" onclick="Router.go('store',{slug:signupData.slug})">Preview Your Store</button>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function attachSignup() {
+  signupStep = 1;
+  signupData = {};
+  renderSignupStep();
+}
+
+/* ═══════════════════════════════════════════════════
+   LOGIN
+═══════════════════════════════════════════════════ */
+function renderLogin() {
+  const tenants = DB.getTenants();
+  const demoAccounts = tenants.slice(0, 3);
+  return `
+    <div class="topbar">
+      <div class="logo" onclick="Router.go('landing')">Shop<span>Forge</span></div>
+      <div class="flex gap-3 text-sm text-muted">New here? <a style="color:var(--brand);cursor:pointer;font-weight:600;" onclick="Router.go('signup')">Create a store</a></div>
+    </div>
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <div class="auth-title">Welcome back</div>
+        <div class="auth-sub">Log in to your merchant dashboard.</div>
+        <div class="auth-form">
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="l_email" type="email" placeholder="you@store.com"/></div>
+          <div class="form-group"><label class="form-label">Password</label><input class="form-input" id="l_password" type="password" placeholder="Your password"/></div>
+          <button class="btn btn-primary w-full btn-lg" id="l_submit">Log In</button>
+        </div>
+        ${demoAccounts.length ? `
+          <div class="auth-divider mt-3">Quick demo login</div>
+          <div class="flex flex-col gap-2" style="margin-top:8px">
+            ${demoAccounts.map(t => `
+              <button class="btn btn-ghost btn-sm w-full" style="justify-content:flex-start;gap:10px" onclick="quickLogin('${t.email}')">
+                <span>🏪</span> <span>${t.name}</span> <span style="margin-left:auto;color:var(--text3);font-size:11px">${t.email}</span>
+              </button>
+            `).join('')}
+          </div>
+        ` : ''}
+        <div class="auth-switch">Don't have a store? <a onclick="Router.go('signup')">Sign up free</a></div>
+      </div>
+    </div>
+  `;
+}
+
+function quickLogin(email) {
+  document.getElementById('l_email').value = email;
+  document.getElementById('l_password').value = 'demo123';
+  document.getElementById('l_submit').click();
+}
+
+function attachLogin() {
+  document.getElementById('l_submit').onclick = () => {
+    const email = document.getElementById('l_email').value.trim();
+    const password = document.getElementById('l_password').value;
+    const tenant = DB.getTenants().find(t => t.email === email && t.password === password);
+    if (!tenant) return toast('Invalid email or password', 'error');
+    DB.setSession({ role: 'merchant', tenantId: tenant.id, email: tenant.email, name: tenant.ownerName });
+    toast('Welcome back, ' + tenant.ownerName.split(' ')[0] + '!');
+    Router.go('dashboard', { tab: 'overview' });
+  };
+}
+
+/* ═══════════════════════════════════════════════════
+   MERCHANT DASHBOARD
+═══════════════════════════════════════════════════ */
+function renderDashboard(tenant, tab) {
+  const orders = DB.getOrders(tenant.id);
+  const products = DB.getProducts(tenant.id);
+  const revenue = orders.filter(o => o.status === 'delivered').reduce((a,o) => a+o.total, 0);
+  const pending = orders.filter(o => o.status === 'pending').length;
+
+  return `
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-logo">
+          <div class="logo-text">Shop<span style="color:var(--brand)">Forge</span></div>
+          <div class="logo-sub">${tenant.name}</div>
+        </div>
+        <nav class="sidebar-nav">
+          <div class="nav-section-label">Store</div>
+          ${[
+            ['overview','Overview', I.home],
+            ['products','Products', I.box],
+            ['orders','Orders', I.orders],
+            ['settings','Settings', I.settings],
+          ].map(([t2,label,icon]) => `
+            <div class="nav-item ${tab===t2?'active':''}" onclick="Router.go('dashboard',{tab:'${t2}'})">
+              ${icon} ${label}
+              ${t2==='orders'&&pending>0?`<span class="badge badge-orange" style="margin-left:auto">${pending}</span>`:''}
+            </div>
+          `).join('')}
+          <div class="nav-section-label" style="margin-top:12px">Links</div>
+          <div class="nav-item" onclick="Router.go('store',{slug:'${tenant.slug}'})">
+            ${I.external} View Storefront
+          </div>
+          <div class="nav-item" onclick="Router.go('schema')">
+            ${I.db} DB Schema
+          </div>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="flex items-center gap-3" style="margin-bottom:12px">
+            <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,92,40,0.2);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--brand);font-size:14px">${tenant.ownerName.charAt(0)}</div>
+            <div>
+              <div style="font-size:13px;font-weight:600">${tenant.ownerName}</div>
+              <div class="text-xs text-muted">${tenant.plan} plan</div>
+            </div>
+          </div>
+          <button class="btn btn-ghost btn-sm w-full" onclick="DB.clearSession();Router.go('landing')">${I.logout} Log out</button>
+        </div>
+      </aside>
+      <main class="main-content" id="dashMain">
+        ${tab==='overview' ? renderOverviewTab(tenant, orders, products, revenue, pending) : ''}
+        ${tab==='products' ? renderProductsTab(tenant, products) : ''}
+        ${tab==='orders' ? renderOrdersTab(tenant, orders) : ''}
+        ${tab==='settings' ? renderSettingsTab(tenant) : ''}
+      </main>
+    </div>
+  `;
+}
+
+function renderOverviewTab(tenant, orders, products, revenue, pending) {
+  const chartData = [40, 65, 30, 80, 55, 90, 70, 45, 85, 60, 75, 95];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const maxVal = Math.max(...chartData);
+  return `
+    <div class="page-header flex justify-between items-center">
+      <div><div class="page-title">Overview</div><div class="page-subtitle">Welcome back, ${tenant.ownerName.split(' ')[0]}!</div></div>
+      <button class="btn btn-primary" onclick="openAddProductModal('${tenant.id}')">${I.plus} Add Product</button>
+    </div>
+    <div class="stats-grid">
+      ${[
+        ['Total Revenue', '₹'+revenue.toLocaleString(), '+12.4%', 'up'],
+        ['Orders', orders.length, '+8 this week', 'up'],
+        ['Products', products.length, products.filter(p=>p.published).length+' published', ''],
+        ['Pending', pending, pending>0?'Needs attention':'All clear', pending>0?'down':'up'],
+      ].map(([label,val,change,dir]) => `
+        <div class="stat-card">
+          <div class="stat-label">${label}</div>
+          <div class="stat-value">${val}</div>
+          <div class="stat-change ${dir}">${change}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="card mb-4">
+      <div class="card-header"><div class="card-title">Revenue (Last 12 Months)</div><span class="badge badge-green">Live</span></div>
+      <div class="chart-wrap">
+        <div class="chart-bars">
+          ${chartData.map((v,i) => `<div class="chart-bar ${i===11?'active':''}" style="height:${(v/maxVal)*100}%" title="${months[i]}: ₹${v*1000}"></div>`).join('')}
+        </div>
+        <div class="chart-labels">${months.map(m=>`<div class="chart-label">${m}</div>`).join('')}</div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Recent Orders</div><button class="btn btn-ghost btn-sm" onclick="Router.go('dashboard',{tab:'orders'})">See all</button></div>
+        ${orders.slice(0,5).length ? `
+          <div class="flex flex-col gap-3">
+            ${orders.slice(0,5).map(o=>`
+              <div class="flex items-center justify-between">
+                <div>
+                  <div style="font-size:13px;font-weight:600">${o.customerName}</div>
+                  <div class="text-xs text-muted">${o.id} · ${o.items[0]?.name}</div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="badge ${statusBadge(o.status)}">${o.status}</span>
+                  <span style="font-weight:700;font-size:13px">₹${o.total.toLocaleString()}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        ` : '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">No orders yet</div></div>'}
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Top Products</div><button class="btn btn-ghost btn-sm" onclick="Router.go('dashboard',{tab:'products'})">Manage</button></div>
+        ${DB.getProducts(tenant.id).slice(0,5).length ? `
+          <div class="flex flex-col gap-3">
+            ${DB.getProducts(tenant.id).slice(0,5).map(p=>`
+              <div class="flex items-center gap-3">
+                <div style="font-size:28px">${p.emoji||'📦'}</div>
+                <div style="flex:1">
+                  <div style="font-size:13px;font-weight:600">${p.name}</div>
+                  <div class="text-xs text-muted">${p.category} · ${p.stock} in stock</div>
+                </div>
+                <div style="font-weight:700;font-size:13px">₹${p.price.toLocaleString()}</div>
+              </div>
+            `).join('')}
+          </div>
+        ` : '<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">No products yet</div></div>'}
+      </div>
+    </div>
+  `;
+}
+
+function renderProductsTab(tenant, products) {
+  return `
+    <div class="page-header flex justify-between items-center">
+      <div><div class="page-title">Products</div><div class="page-subtitle">${products.length} products in your catalog</div></div>
+      <button class="btn btn-primary" onclick="openAddProductModal('${tenant.id}')">${I.plus} Add Product</button>
+    </div>
+    ${products.length ? `
+      <div class="products-grid" id="productsGrid">
+        ${products.map(p => renderProductCard(tenant.id, p)).join('')}
+      </div>
+    ` : `
+      <div class="empty-state" style="padding:100px 20px">
+        <div class="empty-icon">📦</div>
+        <div class="empty-title">No products yet</div>
+        <p style="color:var(--text2);font-size:14px;margin-bottom:20px">Add your first product to start selling.</p>
+        <button class="btn btn-primary" onclick="openAddProductModal('${tenant.id}')">${I.plus} Add Your First Product</button>
+      </div>
+    `}
+  `;
+}
+
+function renderProductCard(tenantId, p) {
+  return `
+    <div class="product-card-dash" id="pcard_${p.id}">
+      <div class="product-card-dash-img">${p.emoji||'📦'}</div>
+      <div class="product-card-dash-body">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+          <div class="product-name" style="font-size:14px;font-weight:700">${p.name}</div>
+          <span class="badge ${p.published ? 'badge-green' : 'badge-gray'}">${p.published ? 'Live' : 'Draft'}</span>
+        </div>
+        <div style="color:var(--brand);font-weight:700;margin:6px 0">₹${p.price.toLocaleString()}</div>
+        <div class="text-xs text-muted">${p.category||'Uncategorized'} · ${p.stock} in stock</div>
+        <div class="flex gap-2 mt-3">
+          <button class="btn btn-ghost btn-sm" onclick="openEditProductModal('${tenantId}','${p.id}')">${I.edit} Edit</button>
+          <button class="btn btn-ghost btn-sm" onclick="togglePublish('${tenantId}','${p.id}',${p.published})">${p.published ? '⏸ Unpublish' : '▶ Publish'}</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteProduct('${tenantId}','${p.id}')">${I.trash}</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderOrdersTab(tenant, orders) {
+  return `
+    <div class="page-header flex justify-between items-center">
+      <div><div class="page-title">Orders</div><div class="page-subtitle">${orders.length} total orders</div></div>
+      <div class="flex gap-2">
+        ${['all','pending','processing','shipped','delivered','cancelled'].map(s => `<button class="btn btn-ghost btn-sm order-filter ${s==='all'?'active':''}" data-filter="${s}" onclick="filterOrders('${tenant.id}','${s}',this)">${s.charAt(0).toUpperCase()+s.slice(1)}</button>`).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table id="ordersTable">
+          <thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="ordersBody">${renderOrderRows(orders)}</tbody>
+        </table>
+      </div>
+      ${!orders.length ? '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">No orders yet</div></div>' : ''}
+    </div>
+  `;
+}
+
+function renderOrderRows(orders) {
+  return orders.map(o => `
+    <tr>
+      <td><span class="font-mono text-sm">${o.id}</span><div class="text-xs text-muted">${new Date(o.createdAt).toLocaleDateString()}</div></td>
+      <td><div style="font-weight:600;font-size:13px">${o.customerName}</div><div class="text-xs text-muted">${o.customerEmail||''}</div></td>
+      <td class="text-sm">${o.items.map(i=>`${i.emoji||'📦'} ${i.name} ×${i.qty}`).join(', ')}</td>
+      <td style="font-weight:700">₹${o.total.toLocaleString()}</td>
+      <td><span class="badge badge-blue">${o.paymentMethod||'Online'}</span></td>
+      <td><span class="badge ${statusBadge(o.status)} order-status-badge" id="status_${o.id}">${o.status}</span></td>
+      <td>
+        <select class="form-input" style="padding:4px 8px;font-size:12px;width:130px" onchange="updateOrderStatus('${o.tenantId}','${o.id}',this.value)">
+          ${['pending','processing','shipped','delivered','cancelled'].map(s=>`<option ${o.status===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderSettingsTab(tenant) {
+  const colors = ['#FF5C28','#38BDF8','#22C55E','#F59E0B','#A855F7','#F43F5E','#0EA5E9','#10B981'];
+  return `
+    <div class="page-header"><div class="page-title">Settings</div><div class="page-subtitle">Manage your store preferences</div></div>
+    
+    <div class="settings-section">
+      <div class="settings-header">Store Information</div>
+      <div class="settings-body">
+        <div class="grid-2">
+          <div class="form-group"><label class="form-label">Store Name</label><input class="form-input" id="set_name" value="${tenant.name}"/></div>
+          <div class="form-group"><label class="form-label">Category</label><input class="form-input" id="set_cat" value="${tenant.category||''}"/></div>
+        </div>
+        <div class="form-group"><label class="form-label">Store URL</label>
+          <div class="flex gap-2 items-center">
+            <span class="text-muted text-sm">shopforge.io/</span>
+            <input class="form-input" style="flex:1" id="set_slug" value="${tenant.slug}"/>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Owner Email</label><input class="form-input" id="set_email" type="email" value="${tenant.email}"/></div>
+        <button class="btn btn-primary" onclick="saveStoreInfo('${tenant.id}')">Save Changes</button>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-header">Theme & Appearance</div>
+      <div class="settings-body">
+        <div class="form-group">
+          <label class="form-label">Brand Color</label>
+          <div class="color-swatches" id="colorSwatches">
+            ${colors.map(c => `<div class="color-swatch ${tenant.theme?.primaryColor===c?'selected':''}" style="background:${c}" onclick="saveBrandColor('${tenant.id}','${c}',this)"></div>`).join('')}
+          </div>
+        </div>
+        <div class="settings-row">
+          <div><div style="font-weight:600;font-size:14px">Maintenance Mode</div><div class="text-sm text-muted">Hide store from public while you make changes</div></div>
+          <div class="toggle ${tenant.settings?.maintenanceMode?'on':''}" onclick="toggleSetting('${tenant.id}','maintenanceMode',this)"></div>
+        </div>
+        <div class="settings-row">
+          <div><div style="font-weight:600;font-size:14px">Allow Reviews</div><div class="text-sm text-muted">Let customers leave product reviews</div></div>
+          <div class="toggle ${tenant.settings?.allowReviews?'on':''}" onclick="toggleSetting('${tenant.id}','allowReviews',this)"></div>
+        </div>
+        <div class="settings-row">
+          <div><div style="font-weight:600;font-size:14px">Free Shipping</div><div class="text-sm text-muted">Offer free shipping on all orders</div></div>
+          <div class="toggle ${tenant.settings?.freeShipping?'on':''}" onclick="toggleSetting('${tenant.id}','freeShipping',this)"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-header">Current Plan</div>
+      <div class="settings-body">
+        <div class="flex items-center justify-between">
+          <div>
+            <div style="font-size:18px;font-weight:700">${tenant.plan.charAt(0).toUpperCase()+tenant.plan.slice(1)} Plan</div>
+            <div class="text-sm text-muted">Active since ${new Date(tenant.createdAt).toLocaleDateString()}</div>
+          </div>
+          <div class="flex gap-2">
+            <span class="badge badge-green">Active</span>
+            <button class="btn btn-ghost btn-sm">Upgrade Plan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section" style="border-color:rgba(239,68,68,0.2)">
+      <div class="settings-header" style="color:var(--danger)">Danger Zone</div>
+      <div class="settings-body">
+        <div class="settings-row">
+          <div><div style="font-weight:600;font-size:14px">Delete Store</div><div class="text-sm text-muted">This action is permanent and cannot be undone.</div></div>
+          <button class="btn btn-danger btn-sm" onclick="confirmDeleteStore('${tenant.id}')">Delete Store</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function attachDashboard(tenant, tab) {
+  // nothing extra needed beyond onclick handlers
+}
+
+/* ── Dashboard helpers ── */
+function statusBadge(status) {
+  return { pending:'badge-orange', processing:'badge-blue', shipped:'badge-blue', delivered:'badge-green', cancelled:'badge-red' }[status] || 'badge-gray';
+}
+
+function filterOrders(tenantId, status, btn) {
+  document.querySelectorAll('.order-filter').forEach(b => b.classList.remove('active','btn-primary'));
+  btn.classList.add('active');
+  const orders = DB.getOrders(tenantId);
+  const filtered = status === 'all' ? orders : orders.filter(o => o.status === status);
+  document.getElementById('ordersBody').innerHTML = renderOrderRows(filtered);
+}
+
+function updateOrderStatus(tenantId, orderId, status) {
+  DB.updateOrder(tenantId, orderId, { status });
+  const badge = document.getElementById('status_' + orderId);
+  if (badge) { badge.className = 'badge ' + statusBadge(status) + ' order-status-badge'; badge.textContent = status; }
+  toast('Order updated to ' + status);
+}
+
+function togglePublish(tenantId, productId, current) {
+  DB.updateProduct(tenantId, productId, { published: !current });
+  const el = document.getElementById('pcard_' + productId);
+  if (el) {
+    const p = DB.getProducts(tenantId).find(p => p.id === productId);
+    if (p) el.outerHTML = renderProductCard(tenantId, p);
+  }
+  toast(current ? 'Product unpublished' : 'Product published!');
+}
+
+function deleteProduct(tenantId, productId) {
+  if (!confirm('Delete this product?')) return;
+  DB.deleteProduct(tenantId, productId);
+  const el = document.getElementById('pcard_' + productId);
+  if (el) el.remove();
+  toast('Product deleted', 'info');
+}
+
+function saveStoreInfo(tenantId) {
+  const name = document.getElementById('set_name')?.value.trim();
+  const slug = document.getElementById('set_slug')?.value.trim().toLowerCase();
+  const cat = document.getElementById('set_cat')?.value.trim();
+  const email = document.getElementById('set_email')?.value.trim();
+  if (!name || !slug) return toast('Name and slug required', 'error');
+  DB.updateTenant(tenantId, { name, slug, category: cat, email });
+  toast('Store info saved!');
+}
+
+function saveBrandColor(tenantId, color, el) {
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  const tenant = DB.getTenant(tenantId);
+  DB.updateTenant(tenantId, { theme: { ...tenant.theme, primaryColor: color } });
+  toast('Brand color updated!');
+}
+
+function toggleSetting(tenantId, key, el) {
+  el.classList.toggle('on');
+  const tenant = DB.getTenant(tenantId);
+  const settings = { ...tenant.settings, [key]: !tenant.settings?.[key] };
+  DB.updateTenant(tenantId, { settings });
+  toast('Setting updated');
+}
+
+function confirmDeleteStore(tenantId) {
+  if (!confirm('⚠️ This will permanently delete your store, all products and orders. Are you sure?')) return;
+  DB.deleteTenant(tenantId);
+  DB.clearSession();
+  toast('Store deleted', 'info');
+  Router.go('landing');
+}
+
+/* ── Product Modal ── */
+function openAddProductModal(tenantId) {
+  showProductModal(tenantId, null);
+}
+function openEditProductModal(tenantId, productId) {
+  const p = DB.getProducts(tenantId).find(p => p.id === productId);
+  showProductModal(tenantId, p);
+}
+
+function showProductModal(tenantId, product) {
+  const isEdit = !!product;
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">${isEdit ? 'Edit Product' : 'Add New Product'}</div>
+      <div class="modal-subtitle">${isEdit ? 'Update product details' : 'Fill in the details for your new product'}</div>
+      <div class="flex flex-col gap-4">
+        <div class="grid-2">
+          <div class="form-group"><label class="form-label">Product Name</label><input class="form-input" id="pm_name" placeholder="e.g. Canvas Tote Bag" value="${product?.name||''}"/></div>
+          <div class="form-group"><label class="form-label">Emoji / Icon</label><input class="form-input" id="pm_emoji" placeholder="📦" value="${product?.emoji||''}"/></div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group"><label class="form-label">Price (₹)</label><input class="form-input" id="pm_price" type="number" placeholder="999" value="${product?.price||''}"/></div>
+          <div class="form-group"><label class="form-label">Compare Price (₹)</label><input class="form-input" id="pm_compare" type="number" placeholder="1499" value="${product?.comparePrice||''}"/></div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group"><label class="form-label">Category</label><input class="form-input" id="pm_cat" placeholder="Apparel, Electronics..." value="${product?.category||''}"/></div>
+          <div class="form-group"><label class="form-label">Stock</label><input class="form-input" id="pm_stock" type="number" placeholder="100" value="${product?.stock||''}"/></div>
+        </div>
+        <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="pm_desc" placeholder="Brief product description...">${product?.description||''}</textarea></div>
+        <div class="flex items-center gap-3">
+          <div class="toggle ${product?.published?'on':''}" id="pm_pub" onclick="this.classList.toggle('on')"></div>
+          <span style="font-size:14px">Published (visible on storefront)</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+        <button class="btn btn-primary" id="pm_save">${isEdit ? 'Save Changes' : 'Add Product'}</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+
+  document.getElementById('pm_save').onclick = () => {
+    const name = document.getElementById('pm_name').value.trim();
+    const price = parseFloat(document.getElementById('pm_price').value);
+    if (!name || isNaN(price)) return toast('Name and price are required', 'error');
+    const data = {
+      name, price,
+      comparePrice: parseFloat(document.getElementById('pm_compare').value) || null,
+      category: document.getElementById('pm_cat').value.trim(),
+      stock: parseInt(document.getElementById('pm_stock').value) || 0,
+      description: document.getElementById('pm_desc').value.trim(),
+      emoji: document.getElementById('pm_emoji').value.trim() || '📦',
+      published: document.getElementById('pm_pub').classList.contains('on'),
+    };
+    if (isEdit) {
+      DB.updateProduct(tenantId, product.id, data);
+      toast('Product updated!');
+    } else {
+      DB.addProduct(tenantId, data);
+      toast('Product added!');
+    }
+    overlay.remove();
+    const tenant = DB.getTenant(tenantId);
+    const products = DB.getProducts(tenantId);
+    const grid = document.getElementById('productsGrid');
+    if (grid) grid.innerHTML = products.map(p => renderProductCard(tenantId, p)).join('');
+    else Router.go('dashboard', { tab: 'products' });
+  };
+}
+
+/* ═══════════════════════════════════════════════════
+   PUBLIC STOREFRONT
+═══════════════════════════════════════════════════ */
+let cart = [];
+
+function renderStore(tenant) {
+  const products = DB.getProducts(tenant.id).filter(p => p.published);
+  const color = tenant.theme?.primaryColor || '#FF5C28';
+  const bg = tenant.theme?.bgGradient || 'linear-gradient(135deg,#0b0b0f,#1c0a00)';
+  return `
+    <style>
+      :root { --store-brand: ${color}; }
+    </style>
+    <div id="storeWrap">
+      <!-- Nav -->
+      <nav style="background:var(--surface);border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;">
+        <div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:${color}">${tenant.name}</div>
+        <div class="flex gap-3 items-center">
+          <span class="text-sm text-muted">${tenant.category||''}</span>
+          <button class="btn btn-primary btn-sm" style="background:${color}" onclick="toggleCart()" id="cartBtn">
+            ${I.cart} Cart <span id="cartCount" class="badge badge-brand" style="background:rgba(255,255,255,0.2);color:#fff">${cart.length}</span>
+          </button>
+          <button class="btn btn-ghost btn-sm" onclick="Router.go('landing')">← Platform</button>
+        </div>
+      </nav>
+
+      <!-- Hero -->
+      <div style="background:${bg};padding:80px 40px;text-align:center;position:relative;overflow:hidden">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(${hexToRgb(color)},0.15) 0%,transparent 70%);pointer-events:none"></div>
+        <div style="position:relative">
+          <div class="hero-badge" style="background:rgba(${hexToRgb(color)},0.1);border-color:rgba(${hexToRgb(color)},0.3);color:${color}">✦ Official Store</div>
+          <h1 style="font-family:var(--font-head);font-size:clamp(32px,6vw,64px);font-weight:800;line-height:1.1;margin:16px 0">${tenant.name}</h1>
+          <p style="color:var(--text2);font-size:17px;max-width:500px;margin:0 auto 28px">${tenant.category ? 'Your destination for premium ' + tenant.category : 'Discover our curated collection'}</p>
+          <button class="btn btn-lg" style="background:${color};color:#fff" onclick="document.getElementById('productSection').scrollIntoView({behavior:'smooth'})">Shop Now →</button>
+        </div>
+      </div>
+
+      <!-- Products -->
+      <div id="productSection" style="max-width:1200px;margin:0 auto;padding:50px 30px">
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <h2 style="font-family:var(--font-head);font-size:24px;font-weight:800">Our Products</h2>
+            <p class="text-sm text-muted">${products.length} items available</p>
+          </div>
+        </div>
+        ${products.length ? `
+          <div class="store-grid" style="padding:0">
+            ${products.map(p => `
+              <div class="product-card-store">
+                <div class="product-img" style="background:var(--surface2)">${p.emoji||'📦'}</div>
+                <div class="product-info">
+                  <div class="product-name">${p.name}</div>
+                  <div class="flex items-center gap-3 mt-1">
+                    <div class="product-price" style="color:${color}">₹${p.price.toLocaleString()}</div>
+                    ${p.comparePrice ? `<div style="font-size:12px;color:var(--text3);text-decoration:line-through">₹${p.comparePrice.toLocaleString()}</div>` : ''}
+                  </div>
+                  <p class="product-desc">${p.description||''}</p>
+                  <div class="flex gap-2 items-center">
+                    <button class="btn w-full" style="background:${color};color:#fff" onclick="addToCart(${JSON.stringify(p).replace(/"/g,'&quot;')})">Add to Cart</button>
+                    <span class="text-xs text-muted">${p.stock} left</span>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        ` : `<div class="empty-state"><div class="empty-icon">🏷️</div><div class="empty-title">No products yet</div><p class="text-muted text-sm">Check back soon!</p></div>`}
+      </div>
+
+      <!-- Footer -->
+      <div style="border-top:1px solid var(--border);padding:28px 40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-top:20px">
+        <div style="font-size:13px;color:var(--text2)">© 2025 <strong>${tenant.name}</strong> · Powered by <span style="color:${color};font-weight:700">ShopForge</span></div>
+        <div class="flex gap-4 text-sm text-muted"><span>Privacy</span><span>Terms</span><span>Contact</span></div>
+      </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+      <div class="flex justify-between items-center mb-4">
+        <div style="font-family:var(--font-head);font-size:18px;font-weight:700">Your Cart</div>
+        <button class="btn btn-icon btn-ghost" onclick="toggleCart()">${I.x}</button>
+      </div>
+      <div id="cartItems" style="flex:1;overflow-y:auto"></div>
+      <div id="cartFooter"></div>
+    </div>
+  `;
+}
+
+function hexToRgb(hex) {
+  const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return r ? `${parseInt(r[1],16)},${parseInt(r[2],16)},${parseInt(r[3],16)}` : '255,92,40';
+}
+
+function attachStore(tenant) {
+  cart = [];
+  renderCart(tenant);
+}
+
+function addToCart(product) {
+  const existing = cart.find(i => i.id === product.id);
+  if (existing) existing.qty++;
+  else cart.push({ ...product, qty: 1 });
+  updateCartCount();
+  renderCart(Router.params.slug ? DB.getTenantBySlug(Router.params.slug) : null);
+  toast(product.name + ' added to cart!');
+}
+
+function updateCartCount() {
+  const el = document.getElementById('cartCount');
+  if (el) el.textContent = cart.reduce((a,i) => a+i.qty, 0);
+}
+
+function toggleCart() {
+  document.getElementById('cartSidebar')?.classList.toggle('open');
+  document.getElementById('cartOverlay')?.classList.toggle('open');
+}
+
+function renderCart(tenant) {
+  const cartItems = document.getElementById('cartItems');
+  const cartFooter = document.getElementById('cartFooter');
+  if (!cartItems) return;
+
+  if (!cart.length) {
+    cartItems.innerHTML = '<div class="empty-state" style="padding:40px 0"><div class="empty-icon">🛒</div><div class="empty-title">Cart is empty</div></div>';
+    cartFooter.innerHTML = '';
+    return;
+  }
+
+  cartItems.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <div class="cart-item-img">${item.emoji||'📦'}</div>
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:14px">${item.name}</div>
+        <div style="color:var(--brand);font-weight:700;font-size:13px">₹${item.price.toLocaleString()}</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="updateQty('${item.id}',-1,${JSON.stringify(tenant).replace(/"/g,"'")})">−</button>
+          <span style="font-weight:700;font-size:14px">${item.qty}</span>
+          <button class="qty-btn" onclick="updateQty('${item.id}',1,${JSON.stringify(tenant).replace(/"/g,"'")})">+</button>
+          <span style="font-size:12px;color:var(--text2);margin-left:4px">= ₹${(item.price*item.qty).toLocaleString()}</span>
+        </div>
+      </div>
+      <button class="btn btn-icon btn-ghost" style="align-self:flex-start" onclick="removeFromCart('${item.id}',${JSON.stringify(tenant).replace(/"/g,"'")})">✕</button>
+    </div>
+  `).join('');
+
+  const total = cart.reduce((a,i) => a + i.price*i.qty, 0);
+  const color = tenant?.theme?.primaryColor || '#FF5C28';
+  cartFooter.innerHTML = `
+    <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:8px">
+      <div class="flex justify-between mb-2 text-sm text-muted"><span>Subtotal</span><span>₹${total.toLocaleString()}</span></div>
+      <div class="flex justify-between mb-3 text-sm text-muted"><span>Shipping</span><span>${tenant?.settings?.freeShipping ? '<span style="color:var(--success)">Free</span>' : '₹49'}</span></div>
+      <div class="flex justify-between fw-600 text-lg mb-4"><span>Total</span><span>₹${(total + (tenant?.settings?.freeShipping ? 0 : 49)).toLocaleString()}</span></div>
+      <button class="btn w-full btn-lg" style="background:${color};color:#fff" onclick="checkout('${tenant?.id}','${tenant?.slug}')">Checkout →</button>
+    </div>
+  `;
+}
+
+function updateQty(productId, delta, tenant) {
+  const item = cart.find(i => i.id === productId);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(i => i.id !== productId);
+  updateCartCount();
+  renderCart(tenant);
+}
+
+function removeFromCart(productId, tenant) {
+  cart = cart.filter(i => i.id !== productId);
+  updateCartCount();
+  renderCart(tenant);
+}
+
+function checkout(tenantId, slug) {
+  if (!cart.length) return toast('Cart is empty', 'error');
+  showCheckoutModal(tenantId, slug);
+}
+
+function showCheckoutModal(tenantId, slug) {
+  const total = cart.reduce((a,i) => a+i.price*i.qty, 0);
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">Checkout</div>
+      <div class="modal-subtitle">Complete your purchase</div>
+      <div class="flex flex-col gap-4">
+        <div class="grid-2">
+          <div class="form-group"><label class="form-label">First Name</label><input class="form-input" id="co_fname" placeholder="Riya"/></div>
+          <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" id="co_lname" placeholder="Nair"/></div>
+        </div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="co_email" type="email" placeholder="riya@email.com"/></div>
+        <div class="form-group"><label class="form-label">Delivery Address</label><textarea class="form-input" id="co_addr" placeholder="Street, City, PIN" style="min-height:70px"></textarea></div>
+        <div class="form-group"><label class="form-label">Payment Method</label>
+          <select class="form-input" id="co_pay">
+            <option>UPI</option><option>Credit/Debit Card</option><option>Net Banking</option><option>Cash on Delivery</option>
+          </select>
+        </div>
+        <div class="card" style="background:var(--surface2)">
+          <div class="text-sm text-muted mb-2">Order Summary</div>
+          ${cart.map(i=>`<div class="flex justify-between text-sm"><span>${i.emoji} ${i.name} ×${i.qty}</span><span>₹${(i.price*i.qty).toLocaleString()}</span></div>`).join('')}
+          <div style="border-top:1px solid var(--border);margin-top:10px;padding-top:10px" class="flex justify-between fw-600">
+            <span>Total</span><span>₹${total.toLocaleString()}</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+        <button class="btn btn-primary" id="co_place">Place Order →</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  document.getElementById('co_place').onclick = () => {
+    const fname = document.getElementById('co_fname').value.trim();
+    const lname = document.getElementById('co_lname').value.trim();
+    const email = document.getElementById('co_email').value.trim();
+    const addr = document.getElementById('co_addr').value.trim();
+    const pay = document.getElementById('co_pay').value;
+    if (!fname || !email || !addr) return toast('Please fill all required fields', 'error');
+    DB.addOrder(tenantId, {
+      customerName: fname + ' ' + lname,
+      customerEmail: email,
+      address: addr,
+      paymentMethod: pay,
+      items: cart.map(i => ({ productId: i.id, name: i.name, price: i.price, qty: i.qty, emoji: i.emoji })),
+      total,
+    });
+    overlay.remove();
+    cart = [];
+    updateCartCount();
+    const tenant = DB.getTenantBySlug(slug);
+    renderCart(tenant);
+    document.getElementById('cartSidebar')?.classList.remove('open');
+    document.getElementById('cartOverlay')?.classList.remove('open');
+    showOrderConfirmation();
+  };
+}
+
+function showOrderConfirmation() {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal" style="text-align:center;padding:48px 32px">
+      <div style="font-size:64px;margin-bottom:16px">🎉</div>
+      <div class="modal-title">Order Placed!</div>
+      <p style="color:var(--text2);font-size:15px;margin:10px 0 28px">Thank you for your order. You'll receive a confirmation email shortly.</p>
+      <button class="btn btn-primary w-full" onclick="this.closest('.modal-overlay').remove()">Continue Shopping</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+/* ═══════════════════════════════════════════════════
+   ADMIN LOGIN
+═══════════════════════════════════════════════════ */
+function renderAdminLogin() {
+  return `
+    <div class="topbar">
+      <div class="logo" onclick="Router.go('landing')">Shop<span>Forge</span></div>
+      <div class="flex gap-2 items-center">
+        <span class="badge badge-brand">${I.shield} Platform Admin</span>
+      </div>
+    </div>
+    <div class="auth-wrap">
+      <div class="auth-card" style="max-width:420px">
+        <div style="text-align:center;margin-bottom:24px">
+          <div style="font-size:48px;margin-bottom:12px">🛡️</div>
+          <div class="auth-title">Admin Access</div>
+          <div class="auth-sub">Enter your platform credentials</div>
+        </div>
+        <div class="auth-form">
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="a_email" value="admin@shopforge.io"/></div>
+          <div class="form-group"><label class="form-label">Password</label><input class="form-input" id="a_password" type="password" value="admin123"/></div>
+          <button class="btn btn-primary w-full btn-lg" id="a_submit">Access Dashboard →</button>
+        </div>
+        <div class="auth-switch" style="margin-top:16px"><a onclick="Router.go('landing')">← Back to Platform</a></div>
+      </div>
+    </div>
+  `;
+}
+
+function attachAdminLogin() {
+  document.getElementById('a_submit').onclick = () => {
+    const email = document.getElementById('a_email').value.trim();
+    const password = document.getElementById('a_password').value;
+    const admin = DB.getAdmin();
+    if (email !== admin.email || password !== admin.password) return toast('Invalid credentials', 'error');
+    DB.setSession({ role: 'admin', email: admin.email, name: admin.name });
+    toast('Welcome, ' + admin.name + '!');
+    Router.go('admin-dashboard', { tab: 'overview' });
+  };
+}
+
+/* ═══════════════════════════════════════════════════
+   ADMIN DASHBOARD
+═══════════════════════════════════════════════════ */
+function renderAdminDashboard(tab) {
+  const tenants = DB.getTenants();
+  const allOrders = tenants.flatMap(t => DB.getOrders(t.id));
+  const totalRevenue = allOrders.filter(o => o.status === 'delivered').reduce((a,o) => a+o.total, 0);
+  const activeStores = tenants.filter(t => t.status === 'active').length;
+
+  return `
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-logo">
+          <div class="logo-text">Shop<span style="color:var(--brand)">Forge</span></div>
+          <div class="logo-sub">Platform Admin</div>
+        </div>
+        <nav class="sidebar-nav">
+          <div class="nav-section-label">Platform</div>
+          ${[
+            ['overview','Overview', I.chart],
+            ['merchants','Merchants', I.store],
+            ['orders','All Orders', I.orders],
+            ['schema','DB Schema', I.db],
+          ].map(([t2,label,icon]) => `
+            <div class="nav-item ${tab===t2?'active':''}" onclick="${t2==='schema'?`Router.go('schema')`:`Router.go('admin-dashboard',{tab:'${t2}'})`}">${icon} ${label}</div>
+          `).join('')}
+        </nav>
+        <div class="sidebar-footer">
+          <div class="flex items-center gap-3" style="margin-bottom:12px">
+            <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,92,40,0.2);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--brand);font-size:14px">A</div>
+            <div>
+              <div style="font-size:13px;font-weight:600">Platform Admin</div>
+              <div class="text-xs text-muted">Super Admin</div>
+            </div>
+          </div>
+          <button class="btn btn-ghost btn-sm w-full" onclick="DB.clearSession();Router.go('landing')">${I.logout} Log out</button>
+        </div>
+      </aside>
+      <main class="main-content">
+        ${tab === 'overview' ? renderAdminOverview(tenants, allOrders, totalRevenue, activeStores) : ''}
+        ${tab === 'merchants' ? renderAdminMerchants(tenants) : ''}
+        ${tab === 'orders' ? renderAdminOrders(tenants, allOrders) : ''}
+      </main>
+    </div>
+  `;
+}
+
+function renderAdminOverview(tenants, allOrders, totalRevenue, activeStores) {
+  const planCounts = { starter: 0, growth: 0, enterprise: 0 };
+  tenants.forEach(t => { if (planCounts[t.plan] !== undefined) planCounts[t.plan]++; });
+  return `
+    <div class="page-header"><div class="page-title">Platform Overview</div><div class="page-subtitle">All merchants, orders, and revenue</div></div>
+    <div class="stats-grid">
+      ${[
+        ['Total Merchants', tenants.length, '+3 this month', 'up'],
+        ['Active Stores', activeStores, '100% uptime', 'up'],
+        ['Platform Revenue', '₹'+totalRevenue.toLocaleString(), 'Gross volume', ''],
+        ['Total Orders', allOrders.length, allOrders.filter(o=>o.status==='pending').length+' pending', ''],
+      ].map(([label,val,change,dir]) => `
+        <div class="stat-card">
+          <div class="stat-label">${label}</div>
+          <div class="stat-value">${val}</div>
+          <div class="stat-change ${dir}">${change}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="grid-2 mb-4">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Plan Distribution</div></div>
+        <div class="flex flex-col gap-4">
+          ${Object.entries(planCounts).map(([plan, count]) => {
+            const pct = tenants.length ? Math.round((count/tenants.length)*100) : 0;
+            const colors = { starter: '#38BDF8', growth: '#FF5C28', enterprise: '#A855F7' };
+            return `
+              <div>
+                <div class="flex justify-between text-sm mb-1"><span style="text-transform:capitalize;font-weight:600">${plan}</span><span class="text-muted">${count} stores (${pct}%)</span></div>
+                <div style="background:var(--surface3);border-radius:4px;height:8px;overflow:hidden">
+                  <div style="background:${colors[plan]};width:${pct}%;height:100%;border-radius:4px;transition:width .6s"></div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Recent Merchants</div><button class="btn btn-ghost btn-sm" onclick="Router.go('admin-dashboard',{tab:'merchants'})">See all</button></div>
+        ${tenants.slice(0,4).map(t => `
+          <div class="flex items-center gap-3 mb-3">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,92,40,0.15);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--brand)">${t.name.charAt(0)}</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600">${t.name}</div>
+              <div class="text-xs text-muted">${t.ownerName} · ${t.plan} plan</div>
+            </div>
+            <span class="badge ${t.status==='active'?'badge-green':'badge-red'}">${t.status}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Top Merchants by Revenue</div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Store</th><th>Owner</th><th>Plan</th><th>Orders</th><th>Revenue</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            ${tenants.sort((a,b) => (b.revenue||0)-(a.revenue||0)).map(t => `
+              <tr>
+                <td><div style="font-weight:700">${t.name}</div><div class="text-xs text-muted">/${t.slug}</div></td>
+                <td class="text-sm">${t.ownerName}</td>
+                <td><span class="badge ${t.plan==='enterprise'?'badge-brand':t.plan==='growth'?'badge-orange':'badge-gray'}">${t.plan}</span></td>
+                <td>${DB.getOrders(t.id).length}</td>
+                <td style="font-weight:700">₹${(t.revenue||0).toLocaleString()}</td>
+                <td><span class="badge ${t.status==='active'?'badge-green':'badge-red'}">${t.status}</span></td>
+                <td class="flex gap-2">
+                  <button class="btn btn-ghost btn-sm" onclick="Router.go('store',{slug:'${t.slug}'})">${I.external}</button>
+                  <button class="btn btn-danger btn-sm" onclick="adminDeleteTenant('${t.id}')">${I.trash}</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderAdminMerchants(tenants) {
+  return `
+    <div class="page-header flex justify-between items-center">
+      <div><div class="page-title">Merchants</div><div class="page-subtitle">${tenants.length} stores on the platform</div></div>
+      <button class="btn btn-primary" onclick="Router.go('signup')">${I.plus} Add Merchant</button>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Store</th><th>Owner</th><th>Email</th><th>Plan</th><th>Products</th><th>Orders</th><th>Revenue</th><th>Joined</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            ${tenants.map(t => `
+              <tr>
+                <td><div style="font-weight:700">${t.name}</div><div class="text-xs font-mono text-muted">/${t.slug}</div></td>
+                <td class="text-sm">${t.ownerName}</td>
+                <td class="text-sm text-muted">${t.email}</td>
+                <td><span class="badge ${t.plan==='enterprise'?'badge-brand':t.plan==='growth'?'badge-orange':'badge-gray'}">${t.plan}</span></td>
+                <td>${DB.getProducts(t.id).length}</td>
+                <td>${DB.getOrders(t.id).length}</td>
+                <td style="font-weight:600">₹${(t.revenue||0).toLocaleString()}</td>
+                <td class="text-sm text-muted">${new Date(t.createdAt).toLocaleDateString()}</td>
+                <td>
+                  <span class="badge ${t.status==='active'?'badge-green':'badge-red'} pointer" onclick="adminToggleStatus('${t.id}','${t.status}',this)">${t.status}</span>
+                </td>
+                <td class="flex gap-2">
+                  <button class="btn btn-ghost btn-sm" onclick="Router.go('store',{slug:'${t.slug}'})">${I.external}</button>
+                  <button class="btn btn-danger btn-sm" onclick="adminDeleteTenant('${t.id}')">${I.trash}</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderAdminOrders(tenants, allOrders) {
+  const allWithStore = allOrders.map(o => ({ ...o, storeName: tenants.find(t=>t.id===o.tenantId)?.name || o.tenantId }));
+  return `
+    <div class="page-header"><div class="page-title">All Orders</div><div class="page-subtitle">${allOrders.length} orders across all stores</div></div>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Order</th><th>Store</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th></tr></thead>
+          <tbody>
+            ${allWithStore.map(o => `
+              <tr>
+                <td class="font-mono text-sm">${o.id}</td>
+                <td><span class="badge badge-brand">${o.storeName}</span></td>
+                <td class="text-sm">${o.customerName}</td>
+                <td class="text-sm">${o.items.map(i=>`${i.emoji||'📦'} ${i.name}`).join(', ')}</td>
+                <td style="font-weight:700">₹${o.total.toLocaleString()}</td>
+                <td><span class="badge badge-blue">${o.paymentMethod||'Online'}</span></td>
+                <td><span class="badge ${statusBadge(o.status)}">${o.status}</span></td>
+                <td class="text-sm text-muted">${new Date(o.createdAt).toLocaleDateString()}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function attachAdminDashboard(tab) {}
+
+function adminDeleteTenant(id) {
+  if (!confirm('Delete this merchant and all their data?')) return;
+  DB.deleteTenant(id);
+  toast('Merchant deleted', 'info');
+  Router.go('admin-dashboard', { tab: 'merchants' });
+}
+
+function adminToggleStatus(id, current, el) {
+  const newStatus = current === 'active' ? 'suspended' : 'active';
+  DB.updateTenant(id, { status: newStatus });
+  el.textContent = newStatus;
+  el.className = 'badge pointer ' + (newStatus === 'active' ? 'badge-green' : 'badge-red');
+  el.onclick = () => adminToggleStatus(id, newStatus, el);
+  toast('Store ' + newStatus);
+}
+
+/* ═══════════════════════════════════════════════════
+   DATABASE SCHEMA PAGE
+═══════════════════════════════════════════════════ */
+function renderSchema() {
+  const tables = [
+    {
+      name: 'tenants',
+      desc: 'Represents each merchant/store on the platform. The core multi-tenancy entity.',
+      columns: [
+        ['id','VARCHAR(30)','PK','Unique tenant identifier (tenant_TIMESTAMP)'],
+        ['name','VARCHAR(255)','','Store display name'],
+        ['slug','VARCHAR(100)','UNIQUE','URL-safe identifier for the storefront'],
+        ['email','VARCHAR(255)','UNIQUE','Merchant login email'],
+        ['password','VARCHAR(255)','','Hashed password'],
+        ['ownerName','VARCHAR(255)','','Full name of store owner'],
+        ['plan','ENUM','','Subscription plan: starter | growth | enterprise'],
+        ['status','ENUM','','Store status: active | suspended | deleted'],
+        ['category','VARCHAR(100)','','Business category'],
+        ['revenue','DECIMAL(12,2)','','Cumulative gross revenue'],
+        ['theme','JSONB','','Brand colors, fonts, storefront theme'],
+        ['settings','JSONB','','Store settings (maintenanceMode, allowReviews, etc.)'],
+        ['createdAt','TIMESTAMP','','Account creation timestamp'],
+        ['updatedAt','TIMESTAMP','','Last modified timestamp'],
+      ]
+    },
+    {
+      name: 'products',
+      desc: 'Products listed on each merchant store. Fully scoped to a tenant.',
+      columns: [
+        ['id','VARCHAR(30)','PK','Unique product ID (prod_TIMESTAMP)'],
+        ['tenantId','VARCHAR(30)','FK → tenants.id','Owning merchant store'],
+        ['name','VARCHAR(255)','','Product display name'],
+        ['description','TEXT','','Full product description'],
+        ['price','DECIMAL(10,2)','','Selling price in INR (or tenant currency)'],
+        ['comparePrice','DECIMAL(10,2)','NULL','Original/crossed price for discounts'],
+        ['category','VARCHAR(100)','','Product category'],
+        ['stock','INTEGER','','Available inventory count'],
+        ['emoji','VARCHAR(10)','','Emoji icon (placeholder for image URL)'],
+        ['published','BOOLEAN','','Whether visible on public storefront'],
+        ['createdAt','TIMESTAMP','','Creation timestamp'],
+      ]
+    },
+    {
+      name: 'orders',
+      desc: 'Customer purchase orders placed on any tenant storefront.',
+      columns: [
+        ['id','VARCHAR(20)','PK','Human-readable order ID (ORD-XXXXXX)'],
+        ['tenantId','VARCHAR(30)','FK → tenants.id','Owning merchant store'],
+        ['customerName','VARCHAR(255)','','Buyer full name'],
+        ['customerEmail','VARCHAR(255)','','Buyer email for notifications'],
+        ['address','TEXT','','Shipping address'],
+        ['items','JSONB','','Array of {productId, name, price, qty, emoji}'],
+        ['total','DECIMAL(10,2)','','Order total in INR'],
+        ['paymentMethod','VARCHAR(50)','','UPI | Card | Net Banking | COD'],
+        ['status','ENUM','','pending | processing | shipped | delivered | cancelled'],
+        ['createdAt','TIMESTAMP','','Order placement timestamp'],
+        ['updatedAt','TIMESTAMP','','Last status update timestamp'],
+      ]
+    },
+    {
+      name: 'admins',
+      desc: 'Platform-level administrator accounts (Shopforge internal team).',
+      columns: [
+        ['id','VARCHAR(30)','PK','Admin ID'],
+        ['email','VARCHAR(255)','UNIQUE','Admin login email'],
+        ['password','VARCHAR(255)','','Hashed password'],
+        ['name','VARCHAR(255)','','Admin display name'],
+        ['role','ENUM','','super_admin | support | finance'],
+        ['createdAt','TIMESTAMP','','Account creation timestamp'],
+      ]
+    },
+    {
+      name: 'sessions',
+      desc: 'Active user sessions for both merchants and admins.',
+      columns: [
+        ['id','VARCHAR(36)','PK','UUID session token'],
+        ['userId','VARCHAR(30)','FK','Reference to tenants.id or admins.id'],
+        ['role','ENUM','','merchant | admin'],
+        ['expiresAt','TIMESTAMP','','Session expiry timestamp'],
+        ['createdAt','TIMESTAMP','','Session start timestamp'],
+      ]
+    },
+    {
+      name: 'plans',
+      desc: 'Subscription plans available on the platform.',
+      columns: [
+        ['id','VARCHAR(20)','PK','Plan identifier: starter | growth | enterprise'],
+        ['name','VARCHAR(100)','','Display name'],
+        ['priceMonthly','DECIMAL(8,2)','','Monthly price in INR'],
+        ['priceAnnual','DECIMAL(8,2)','','Annual price in INR'],
+        ['maxProducts','INTEGER','NULL','Product limit (NULL = unlimited)'],
+        ['transactionFeePercent','DECIMAL(4,2)','','% cut taken per transaction'],
+        ['features','JSONB','','Array of feature flags'],
+      ]
+    },
+  ];
+
+  return `
+    <div class="topbar">
+      <div class="logo" onclick="Router.go('landing')">Shop<span>Forge</span></div>
+      <div class="flex gap-3">
+        <button class="btn btn-ghost btn-sm" onclick="history.back()">← Back</button>
+      </div>
+    </div>
+    <div class="schema-section">
+      <div style="margin-bottom:40px">
+        <div style="font-family:var(--font-head);font-size:32px;font-weight:800;margin-bottom:8px">Database Schema</div>
+        <p style="color:var(--text2);font-size:16px;max-width:700px">Full relational schema for the ShopForge multi-tenant ecommerce platform. Built for PostgreSQL with row-level security per tenant.</p>
+      </div>
+
+      <!-- ERD visual -->
+      <div class="card mb-6" style="padding:24px">
+        <div class="card-title mb-4">Entity Relationship Overview</div>
+        <div style="font-family:var(--font-mono);font-size:13px;color:var(--text2);line-height:2;overflow-x:auto;padding:8px">
+          <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+            ${['plans','tenants','products','orders','sessions','admins'].map((t,i) => {
+              const colors = ['#F59E0B','#FF5C28','#38BDF8','#22C55E','#A855F7','#94A3B8'];
+              const rels = { tenants:'→ plans(plan)', products:'→ tenants(tenantId)', orders:'→ tenants(tenantId)', sessions:'→ tenants|admins(userId)' };
+              return `
+                <div style="background:var(--surface2);border:1px solid ${colors[i]}33;border-left:3px solid ${colors[i]};border-radius:8px;padding:12px 16px;min-width:180px">
+                  <div style="color:${colors[i]};font-weight:700;margin-bottom:8px;font-size:14px">${t}</div>
+                  ${rels[t] ? `<div style="font-size:11px;color:var(--text3)">${rels[t]}</div>` : '<div style="font-size:11px;color:var(--text3)">root entity</div>'}
+                </div>
+              `;
+            }).join('')}
+          </div>
+          <div style="margin-top:20px;padding:14px;background:var(--surface2);border-radius:8px;font-size:12px;color:var(--text2)">
+            <strong style="color:var(--text)">Multi-Tenancy strategy:</strong> Tenant ID foreign key on every scoped table (products, orders, sessions). Use PostgreSQL Row Level Security (RLS) policy: <code style="color:var(--brand)">USING (tenant_id = current_setting('app.current_tenant')::TEXT)</code>
+          </div>
+        </div>
+      </div>
+
+      ${tables.map(t => `
+        <div style="margin-bottom:40px">
+          <div class="flex items-center gap-3 mb-2">
+            <h3 style="font-family:var(--font-head);font-size:20px;font-weight:800;color:var(--brand)">${t.name}</h3>
+            <span class="badge badge-gray">TABLE</span>
+          </div>
+          <p style="color:var(--text2);font-size:14px;margin-bottom:14px">${t.desc}</p>
+          <div class="table-wrap">
+            <table class="schema-table">
+              <thead><tr><th>Column</th><th>Type</th><th>Constraint</th><th>Description</th></tr></thead>
+              <tbody>
+                ${t.columns.map(([col,type,constraint,desc]) => `
+                  <tr>
+                    <td style="font-family:var(--font-mono);font-weight:700;color:var(--text)">${col}</td>
+                    <td class="col-type">${type}</td>
+                    <td>${constraint?`<span class="${constraint.startsWith('PK')?'col-pk':constraint.startsWith('FK')?'col-fk':'badge badge-gray'}">${constraint}</span>`:''}</td>
+                    <td style="color:var(--text2);font-size:13px">${desc}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `).join('')}
+
+      <div class="card" style="margin-bottom:60px;border-color:rgba(255,92,40,0.2)">
+        <div class="card-title mb-4">📐 Indexing Strategy</div>
+        <div style="font-family:var(--font-mono);font-size:13px;display:flex;flex-direction:column;gap:8px;color:var(--text2)">
+          ${[
+            ['tenants_slug_idx','tenants(slug)','Unique index — storefront lookup by slug'],
+            ['tenants_email_idx','tenants(email)','Unique index — merchant login lookup'],
+            ['products_tenant_idx','products(tenantId)','Composite with published for fast catalog queries'],
+            ['products_tenant_pub_idx','products(tenantId, published)','Partial index for storefront listing'],
+            ['orders_tenant_idx','orders(tenantId)','For merchant dashboard order listing'],
+            ['orders_status_idx','orders(tenantId, status)','Filter orders by status'],
+            ['orders_created_idx','orders(createdAt DESC)','Chronological order feeds'],
+          ].map(([name,cols,note]) => `
+            <div style="padding:10px 14px;background:var(--surface2);border-radius:6px">
+              <span style="color:var(--warning)">CREATE INDEX</span> <span style="color:var(--text)">${name}</span>
+              <span style="color:var(--info)"> ON </span><span style="color:var(--success)">${cols}</span>;
+              <span style="color:var(--text3);margin-left:12px">-- ${note}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* ═══════════════════════════════════════════════════
+   BOOT
+═══════════════════════════════════════════════════ */
+Router.go('landing');
+</script>
+</body>
+</html>
