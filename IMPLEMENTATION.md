@@ -1,5 +1,8 @@
 # IMPLEMENTATION.md — How It's Built
 
+## Approver - Rajiv/Tony
+## Build - Sameer
+
 ## Overview
 
 Retisio Portal lives entirely in `retisio-portal.html` — roughly 1,600 lines of HTML, CSS, and JavaScript with no build step, no dependencies, and no backend. This document walks through every major system in the codebase.
