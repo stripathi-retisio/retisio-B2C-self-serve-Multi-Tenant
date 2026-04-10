@@ -20,8 +20,8 @@ Thank you for your interest in contributing. Retisio Portal is a learning-friend
 
 ```bash
 # Fork via GitHub UI, then:
-git clone https://github.com/YOUR_USERNAME/shopforge-demo.git
-cd shopforge-demo
+git clone https://github.com/YOUR_USERNAME/retisio-demo.git
+cd retisio-demo
 ```
 
 ### 2. Open the project
@@ -95,7 +95,7 @@ Read [IMPLEMENTATION.md](IMPLEMENTATION.md) before making changes. It walks thro
 
 ## Good First Issues
 
-Look for issues tagged `good first issue` on the [issue tracker](https://github.com/stripathi-retisio/shopforge-demo/issues).
+Look for issues tagged `good first issue` on the [issue tracker](https://github.com/stripathi-retisio/retisio-demo/issues).
 
 Ideas for contributions:
 
@@ -151,7 +151,7 @@ Keep contributions aligned with the Retisio positioning. Features that make it l
 
 ## Questions?
 
-Open a [GitHub Discussion](https://github.com/stripathi-retisio/shopforge-demo/discussions).
+Open a [GitHub Discussion](https://github.com/stripathi-retisio/retisio-demo/discussions).
 
 ---
 
