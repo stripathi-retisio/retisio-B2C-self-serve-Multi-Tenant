@@ -2,8 +2,8 @@
 
 > **Self-serve retailer onboarding and multi-tenant control plane** — provision sandbox tenants, configure catalog/pricing/inventory, and promote retailers to production.
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit-FF5C28?style=for-the-badge)](https://stripathi-retisio.github.io/shopforge-demo)
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/stripathi-retisio/shopforge-demo)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit-FF5C28?style=for-the-badge)](https://stripathi-retisio.github.io/retisio-demo)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/stripathi-retisio/retisio-demo)
 [![Phase](https://img.shields.io/badge/Phase-1%20Prototype-38BDF8?style=for-the-badge)](#roadmap)
 [![Built with](https://img.shields.io/badge/Built%20with-HTML%2FCSS%2FJS-F59E0B?style=for-the-badge)](#tech-stack)
 
@@ -105,8 +105,8 @@ Requested → Sandbox Ready → Setup In Progress → Ready for Production → L
 ## Quick Start
 
 ```bash
-git clone https://github.com/stripathi-retisio/shopforge-demo.git
-cd shopforge-demo
+git clone https://github.com/stripathi-retisio/retisio-demo.git
+cd retisio-demo
 open retisio-portal.html
 ```
 
@@ -135,7 +135,7 @@ No build step. No dependencies. Works in any modern browser. Data persists in `l
 ## Project Structure
 
 ```
-shopforge-demo/
+retisio-demo/
 ├── retisio-portal.html     # Entire application (~1,600 lines, single file)
 ├── README.md               # You are here
 ├── PLAN.md                 # Vision, phases, roadmap, decisions
